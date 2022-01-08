@@ -14,7 +14,6 @@
     ]
   ],
   "excluded-modules": [
-    "Button",
     "Dynamic Atlas",
     "DragonBones",
     "EditBox",
@@ -31,12 +30,10 @@
     "ParticleSystem",
     "RichText",
     "Renderer Texture",
-    "Slider",
     "ScrollBar",
     "ScrollView",
     "Spine Skeleton",
     "StudioComponent",
-    "Toggle",
     "TiledMap",
     "VideoPlayer",
     "WebView",

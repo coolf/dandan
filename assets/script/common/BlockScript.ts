@@ -12,6 +12,19 @@ const {ccclass, property} = cc._decorator;
 
 @ccclass
 export default class BlockScript extends cc.Component {
+    get blockInfo(): any {
+        this._blockInfo.x = this.node.x;
+        this._blockInfo.y = this.node.y;
+        this._blockInfo.info = this.getPyhCollider().tag;
+        this._blockInfo.rotation = this.node.angle;
+        this._blockInfo.scale = this.node.scale;
+        this._blockInfo.prefab = this.node.name;
+        return this._blockInfo;
+    }
+
+    set blockInfo(value: any) {
+        this._blockInfo = value;
+    }
 
 
     // LIFE-CYCLE CALLBACKS:
@@ -23,6 +36,21 @@ export default class BlockScript extends cc.Component {
     border: cc.SpriteFrame = null;
 
 
+    private _blockInfo = {
+        info: 0,
+        prefab: null,
+        x: 0,
+        y: 0,
+        rotation: 0,
+        rotate: 0, // 开启旋转
+        scale: 1,// 缩放
+        float: {
+            type: 0, // 0 左右移动，1 上下移动
+            num: 0// 移动距离
+        }
+    };
+
+
     onLoad() {
     }
 
@@ -30,12 +58,14 @@ export default class BlockScript extends cc.Component {
     start() {
     }
 
+
     /**
      * 设置角度
      * @param rotation
      */
     initRotation(rotation: number) {
         this.node.angle = -rotation
+
     }
 
 
@@ -43,6 +73,7 @@ export default class BlockScript extends cc.Component {
      * node 转动
      */
     initRotate() {
+        this._blockInfo.rotate = 1;
         cc.tween(this.node.children[0])
             .repeatForever(
                 cc.tween().by(0.2, {angle: 30})
@@ -50,8 +81,13 @@ export default class BlockScript extends cc.Component {
             .start()
     }
 
+    /**
+     * 上下左右浮动
+     * @param float
+     */
     initFloat(float) {
-        console.log('float', float)
+        // console.log('float', float)
+        this._blockInfo.float = float;
         if (float.type == 0) {
             cc.tween(this.node.children[0])
                 .repeatForever(
@@ -64,7 +100,6 @@ export default class BlockScript extends cc.Component {
                 .start()
         }
         if (float.type == 1) {
-            console.log('222')
             cc.tween(this.node.children[0])
                 .repeatForever(
                     cc.tween()

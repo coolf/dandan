@@ -1,0 +1,58 @@
+{
+  "block": [
+    {
+      "info": 0,
+      "prefab": "block_cfx",
+      "x": 47.61449337005615,
+      "y": -163.20365524291992,
+      "rotation": -45.61976709365845,
+      "rotate": 0,
+      "scale": 1,
+      "float": {
+        "type": 0,
+        "num": 0
+      }
+    },
+    {
+      "info": 0,
+      "prefab": "block_cfx",
+      "x": -32.986056327819824,
+      "y": 190.891019821167,
+      "rotation": -52.65458250045777,
+      "rotate": 0,
+      "scale": 1,
+      "float": {
+        "type": 0,
+        "num": 0
+      }
+    },
+    {
+      "info": 0,
+      "prefab": "block_yuan",
+      "x": 51.8429594039917,
+      "y": 544.7260413169861,
+      "rotation": 0,
+      "rotate": 0,
+      "scale": 1,
+      "float": {
+        "type": 0,
+        "num": 0
+      }
+    }
+  ],
+  "banBlock": [
+    {
+      "info": 1,
+      "prefab": "block_cfx",
+      "x": 275.6292667388916,
+      "y": 330.11763095855713,
+      "rotation": 0,
+      "rotate": 0,
+      "scale": 1,
+      "float": {
+        "type": 0,
+        "num": 0
+      }
+    }
+  ]
+}

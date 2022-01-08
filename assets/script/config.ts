@@ -35,7 +35,7 @@ export type resBlockType =
             prefab: string,
             x: number,
             y: number,
-            rotation: number,
+            rotation: number, // 角度
             rotate: number, // 开启旋转
             scale: number,// 缩放
             float: {
