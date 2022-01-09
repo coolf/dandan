@@ -32,9 +32,12 @@ export default class BallScript extends cc.Component {
 
     onBeginContact(contact, selfCollider: cc.Collider, otherCollider: cc.Collider) {
 
-        if (this.MainScript_.isTouch) return;
 
         let otherNodeType = this.MainScript_.getBlockTag(otherCollider.node);
+
+        // 解决瞄准小球第一个不消失
+        if (this.MainScript_.isTouch && otherNodeType != blockType.aimBall) return;
+
         //白块
         if (otherNodeType == blockType.white) {
             // otherCollider.node.getComponent(BlockScript).createBorder();

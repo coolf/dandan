@@ -7,7 +7,7 @@
 
 import {click, clickEnd, clickMove, getData, loading, openWuli, requests, setData} from "./Utils";
 import Player from "./Player";
-import {ballSpeed, blockType, levelApi, resBlockType} from "./config";
+import {ballSpeed, blockName, blockType, levelApi, resBlockType} from "./config";
 import BlockScript from "./common/BlockScript";
 import AimBallScript from "./common/AimBallScript";
 import EndBallScript from "./common/EndBallScript";
@@ -28,7 +28,7 @@ export default class MainScript extends cc.Component {
     }
 
 
-    private level = 5;
+    private level = 7;
 
 
     public isTouch = false;
@@ -156,6 +156,9 @@ export default class MainScript extends cc.Component {
                 let node = cc.instantiate(prefab);
                 // 设置属性  黑白
                 node.getComponent(BlockScript).initType(blockType.white)
+                if (item.prefab =='block_xian') {
+                    node.getComponent(BlockScript).initType(blockType.line)
+                }
 
                 // todo 自定义属性。 后面优化写法
                 // 设置旋转角度

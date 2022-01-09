@@ -105,11 +105,11 @@ export default class CreateScript extends cc.Component {
 
 
         click(this.addBlockBtn, () => {
+            // console.log(this.blockInfo)
             this.addBlock();
             this.pullAddBlock();
 
 
-            // console.log(this.blockInfo)
         })
 
 
@@ -166,6 +166,8 @@ export default class CreateScript extends cc.Component {
         this.blockInfo.prefab = node.name;
         // console.log(node.name)
 
+        if (this.blockInfo.prefab == 'block_xian') this.blockInfo.info = blockType.line;
+
         this.addBlockTitle.getComponent(cc.Label).string = `添加一个{${blockName[node.name]}}模块`
         cc.resources.load('prefab/' + node.name, cc.Prefab, (err, prefab: cc.Prefab) => {
             let node = cc.instantiate(prefab);
@@ -173,6 +175,7 @@ export default class CreateScript extends cc.Component {
             node.name = "block";
             node.parent = this.addBlockPanelNode;
             node.y = this.addBlockPanelNode.height / 2 - 100 - node.height / 2;
+
         })
     }
 
@@ -209,6 +212,13 @@ export default class CreateScript extends cc.Component {
             node.children[0].color = new cc.Color(255, 255, 255)
             this.blockInfo.info = blockType.white
         }
+
+        /**
+         * 线单独处理
+         */
+        if (this.blockInfo.prefab == 'block_xian') {
+            this.blockInfo.info = blockType.white
+        }
     }
 
     /**
@@ -222,10 +232,22 @@ export default class CreateScript extends cc.Component {
                     cc.tween().by(0.2, {angle: 30})
                 )
                 .start()
+            if (this.blockInfo.prefab == 'block_xian') {
+                cc.tween(this.blockNode().children[1])
+                    .repeatForever(
+                        cc.tween().by(0.2, {angle: 30})
+                    )
+                    .start()
+            }
             this.blockInfo.rotate = 1;
         } else {
             this.blockNode().children[0].stopAllActions();
             this.blockNode().children[0].angle = 0;
+
+            if (this.blockInfo.prefab == 'block_xian') {
+                this.blockNode().children[1].stopAllActions();
+                this.blockNode().children[1].angle = 0;
+            }
             this.blockInfo.rotate = 0;
         }
     }
@@ -236,12 +258,14 @@ export default class CreateScript extends cc.Component {
      */
     createAngle(s: cc.Slider) {
         if (s.progress > 0.5) {
-            this.blockNode().children[0].angle = -((s.progress - 0.5) * 180)
+            this.blockNode().children[0].angle = -((s.progress - 0.5) * 360)
+            if (this.blockInfo.prefab == 'block_xian') this.blockNode().children[1].angle = -((s.progress - 0.5) * 360)
         } else {
-            this.blockNode().children[0].angle = ((0.5 - s.progress) * 180)
+            this.blockNode().children[0].angle = ((0.5 - s.progress) * 360)
+            if (this.blockInfo.prefab == 'block_xian') this.blockNode().children[1].angle = ((0.5 - s.progress) * 360)
         }
 
-        this.blockInfo.rotation = -this.blockNode().children[0].angle;
+        this.blockInfo.rotation = this.blockNode().children[0].angle;
     }
 
 
@@ -272,6 +296,7 @@ export default class CreateScript extends cc.Component {
     addBlock() {
         // console.log(this.blockInfo);
         let item = this.blockInfo;
+        console.log(item)
 
         cc.resources.load('prefab/' + this.blockInfo.prefab, cc.Prefab, (err, prefab: cc.Prefab) => {
             // console.log(prefab)

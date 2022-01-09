@@ -19,6 +19,10 @@ export default class BlockCreateScript extends cc.Component {
             this.node.y += _.getDeltaY()
 
         })
+        // click(this.node, () => {
+        //     console.log(this.node.x)
+        //     console.log(this.node.y)
+        // })
     }
 
     start() {

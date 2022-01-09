@@ -6,6 +6,7 @@
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
 import {blockType} from "../config";
+import Player from "../Player";
 
 const {ccclass, property} = cc._decorator;
 
@@ -56,7 +57,9 @@ export default class AimBallScript extends cc.Component {
         let distance = pos.sub(startPos);
         for (let i = 0; i < this.AimBalls.children.length; i++) {
             this.AimBalls.children[i].active = true;
-            this.AimBalls.children[i].setPosition(cc.v2(startPos.x + distance.x / this.ballNum * i, startPos.y + distance.y / this.ballNum * i))
+            // let startDistance = Player.getInstance().ballNode.width / 2 + this.AimBalls.children[i].width / 2;
+            let startDistance = 0;
+            this.AimBalls.children[i].setPosition(cc.v2(startDistance + (startPos.x + distance.x / this.ballNum * i), startDistance + (startPos.y + distance.y / this.ballNum * i)))
         }
     }
 

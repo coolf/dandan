@@ -4,7 +4,7 @@ let scene = {
 
 }
 
-let levelApi = (level) => `https://tool.teqiyi.com/dandan/Level${level}.json`;
+let levelApi = (level) => `https://tool.teqiyi.com/dandan/Level${level}.json?v=${new Date().getTime()}`;
 
 let ballSpeed = 800;
 
