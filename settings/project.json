@@ -1,7 +1,8 @@
 {
   "group-list": [
     "ball",
-    "block"
+    "block",
+    "indexBlock"
   ],
   "collision-matrix": [
     [
@@ -11,6 +12,11 @@
     [
       true,
       false
+    ],
+    [
+      false,
+      false,
+      true
     ]
   ],
   "excluded-modules": [

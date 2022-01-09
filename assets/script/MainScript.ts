@@ -5,7 +5,7 @@
 // Learn life-cycle callbacks:
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
-import {click, clickEnd, clickMove, getData, loading, openWuli, requests, setData} from "./Utils";
+import {click, clickEnd, clickMove, getData, loading, openWuli, requests, setData, wxGame} from "./Utils";
 import Player from "./Player";
 import {ballSpeed, blockName, blockType, levelApi, resBlockType} from "./config";
 import BlockScript from "./common/BlockScript";
@@ -28,9 +28,6 @@ export default class MainScript extends cc.Component {
     }
 
 
-    private level = 7;
-
-
     public isTouch = false;
 
     @property(cc.Node)
@@ -38,7 +35,6 @@ export default class MainScript extends cc.Component {
 
 
     onLoad() {
-        openWuli();
         this.blockParent.zIndex = 99;
         this.initScript();
         this.initTouch();
@@ -54,12 +50,12 @@ export default class MainScript extends cc.Component {
      */
     initScript() {
         //添加瞄准小球脚本
-        if (!Player.getInstance().CanvasNode.getComponent(AimBallScript)) {
-            Player.getInstance().CanvasNode.addComponent(AimBallScript)
+        if (!Player.getInstance().CanvasNode().getComponent(AimBallScript)) {
+            Player.getInstance().CanvasNode().addComponent(AimBallScript)
         }
 
-        if (!Player.getInstance().CanvasNode.getComponent(EndBallScript)) {
-            Player.getInstance().CanvasNode.addComponent(EndBallScript)
+        if (!Player.getInstance().CanvasNode().getComponent(EndBallScript)) {
+            Player.getInstance().CanvasNode().addComponent(EndBallScript)
         }
     }
 
@@ -69,7 +65,6 @@ export default class MainScript extends cc.Component {
      */
     initTouch() {
 
-
         click(this.node, (_: cc.Event.EventTouch) => {
             if (this.isSuccess()) return;
 
@@ -78,9 +73,9 @@ export default class MainScript extends cc.Component {
             this.reSetBlock();
             Player.getInstance().isSendEndBall = false;
             this.setBallLaunch(cc.v2(0, 0));
-            Player.getInstance().ballNode.active = true;
+            Player.getInstance().ballNode().active = true;
             this.touch_change.start = this.node.convertToNodeSpaceAR(_.getLocation());
-            Player.getInstance().ballNode.setPosition(this.touch_change.start);
+            Player.getInstance().ballNode().setPosition(this.touch_change.start);
 
 
         }, false)
@@ -92,8 +87,8 @@ export default class MainScript extends cc.Component {
             // 向量长度
             let distance = this.touch_change.end.sub(this.touch_change.start).mag();
             if (distance < 30) {
-                Player.getInstance().ballNode.active = false;
-                Player.getInstance().CanvasNode.getComponent(AimBallScript).hide();
+                Player.getInstance().ballNode().active = false;
+                Player.getInstance().CanvasNode().getComponent(AimBallScript).hide();
                 return;
             }
             let newPos: cc.Vec2 = new cc.Vec2(this.touch_change.end.x - this.touch_change.start.x, this.touch_change.end.y - this.touch_change.start.y);
@@ -105,7 +100,7 @@ export default class MainScript extends cc.Component {
                 if (this.isSuccess()) return;
                 if (!this.isTouch) return;
                 let pos = this.node.convertToNodeSpaceAR(_.getLocation())
-                Player.getInstance().CanvasNode.getComponent(AimBallScript).createBalls(pos, this.touch_change.start);
+                Player.getInstance().CanvasNode().getComponent(AimBallScript).createBalls(pos, this.touch_change.start);
             }
         )
 
@@ -124,7 +119,7 @@ export default class MainScript extends cc.Component {
             return;
         }
         loading.start();
-        if (cc.sys.platform === cc.sys.WECHAT_GAME) {
+        if (wxGame) {
             // @ts-ignore
             wx.request({
                 url: levelApi(level),
@@ -156,7 +151,7 @@ export default class MainScript extends cc.Component {
                 let node = cc.instantiate(prefab);
                 // 设置属性  黑白
                 node.getComponent(BlockScript).initType(blockType.white)
-                if (item.prefab =='block_xian') {
+                if (item.prefab == 'block_xian') {
                     node.getComponent(BlockScript).initType(blockType.line)
                 }
 
@@ -208,6 +203,8 @@ export default class MainScript extends cc.Component {
      * 未通关显示消失的block
      */
     reSetBlock() {
+        //todo 消失未显示。待修复
+        console.log('222')
         this.blockParent.children.forEach(_ => {
             // 未通关显示隐藏的块块
             if (!_.children[0].active && (this.getBlockTag(_) == blockType.white || this.getBlockTag(_) == blockType.line)) {
@@ -261,7 +258,7 @@ export default class MainScript extends cc.Component {
      * @param pos
      */
     setBallLaunch(pos: cc.Vec2) {
-        Player.getInstance().ballNode.getComponent(cc.RigidBody).linearVelocity = pos
+        Player.getInstance().ballNode().getComponent(cc.RigidBody).linearVelocity = pos
     }
 
     /**
@@ -270,9 +267,9 @@ export default class MainScript extends cc.Component {
      */
     getBlockTag(node: cc.Node): number {
         // 兼容瞄准的小球
-        if (node.children.length) {
-            node = node.children[0]
-        }
+        // if (node.children.length == 1) {
+        //     node = node.children[0]
+        // }
         if (node.getComponent(cc.PhysicsBoxCollider)) return node.getComponent(cc.PhysicsBoxCollider).tag
         if (node.getComponent(cc.PhysicsCircleCollider)) return node.getComponent(cc.PhysicsCircleCollider).tag
         if (node.getComponent(cc.PhysicsChainCollider)) return node.getComponent(cc.PhysicsChainCollider).tag
@@ -280,9 +277,8 @@ export default class MainScript extends cc.Component {
 
     nextLevel() {
         this.blockParent.removeAllChildren();
-        cc.find('Canvas/next_level').getComponent(NextLevelScript).show(this.level, () => {
-            this.level += 1;
-            this.loadLevelNpc(this.level)
+        cc.find('Canvas/next_level').getComponent(NextLevelScript).show(Player.getInstance().level, () => {
+            this.loadLevelNpc(Player.getInstance().level)
         })
 
 

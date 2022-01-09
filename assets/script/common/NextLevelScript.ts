@@ -29,7 +29,7 @@ export default class NextLevelScript extends cc.Component {
     show(level: number, cb: Function) {
         this.node.active = true;
         this.nextLevelTable.opacity = 100;
-        this.nextLevelTable.getComponent(cc.Label).string = `${level + 1}`
+        this.nextLevelTable.getComponent(cc.Label).string = `${level}`
         this.nextLevelTable.x = 0;
         this.nextLevelTable.y = cc.winSize.height / 2 + this.nextLevelTable.height / 2;
 
@@ -56,10 +56,10 @@ export default class NextLevelScript extends cc.Component {
         this.levelTable.scale = 0.8;
         this.levelTable.opacity = 0;
         this.levelTable.setPosition(cc.v2(0, 0))
-        if (level == 0) {
+        if (level == 1) {
             this.levelTable.getComponent(cc.Label).string = `Go`;
         } else {
-            this.levelTable.getComponent(cc.Label).string = `${level}`
+            this.levelTable.getComponent(cc.Label).string = `${level - 1}`
         }
         cc.tween(this.levelTable)
             .parallel(

@@ -66,8 +66,8 @@ export default class EndBallScript extends cc.Component {
         this.num++
         if (!(this.num % 2 == 0)) return
         if (!Player.getInstance().isSendEndBall) return;
-        if (Player.getInstance().ballNode.active) {
-            this.setPos(Player.getInstance().ballNode.position);
+        if (Player.getInstance().ballNode().active) {
+            this.setPos(Player.getInstance().ballNode().position);
         }
     }
 }

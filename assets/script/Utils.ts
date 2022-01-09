@@ -77,7 +77,7 @@ let specialEffects = {
  * @param key
  * @param val
  */
-let setData = function (key: string, val: string) {
+let setData = function (key: string, val: string | number | any) {
     cc.sys.localStorage.setItem(key, val);
 }
 
@@ -342,6 +342,8 @@ let requests = {
 }
 
 
+let wxGame = cc.sys.platform === cc.sys.WECHAT_GAME;
+
 /**
  * 判断是否debug 模式
  */
@@ -368,6 +370,7 @@ export {
     , getLocaleDateString
     , loading
     , requests
+    , wxGame
 };
 
 

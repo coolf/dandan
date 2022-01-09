@@ -1,3 +1,5 @@
+import {getData, setData} from "./Utils";
+
 /**
  *
  *
@@ -9,19 +11,38 @@
 
 
 export default class Player {
+    get openid(): string {
+        // return this._openid;
+        return getData('openid');
+    }
+
+    set openid(value: string) {
+        this._openid = value;
+        setData('openid', value)
+
+    }
+
+    get level(): number {
+        // return this._level;
+        return parseInt(getData('level'));
+    }
+
+    set level(value: number) {
+        this._level = value;
+
+        setData('level', value)
+    }
 
 
     private static instance: Player;
-
-    // 球球
-    public ballNode: cc.Node = cc.find('Canvas/ball');
-    public CanvasNode: cc.Node = cc.find('Canvas');
 
 
     public isSendEndBall = false;
 
 
-    public _level: number = 1;
+    private _openid: string = null
+
+    private _level: number = 1;
 
     /**
      * 实例
@@ -33,5 +54,12 @@ export default class Player {
         return this.instance;
     }
 
+    public CanvasNode(): cc.Node {
+        return cc.find('Canvas');
+    }
+
+    public ballNode(): cc.Node {
+        return cc.find('Canvas/ball');
+    }
 
 }

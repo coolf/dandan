@@ -22,7 +22,7 @@ export default class BallScript extends cc.Component {
     private MainScript_: MainScript = null;
 
     onLoad() {
-        this.MainScript_ = Player.getInstance().CanvasNode.getComponent(MainScript);
+        this.MainScript_ = Player.getInstance().CanvasNode().getComponent(MainScript);
 
     }
 
@@ -66,7 +66,7 @@ export default class BallScript extends cc.Component {
      * 隐藏瞄准的小球
      */
     hideAimBall() {
-        Player.getInstance().CanvasNode.getComponent(AimBallScript).hide();
+        Player.getInstance().CanvasNode().getComponent(AimBallScript).hide();
     }
 
     update(dt) {
@@ -82,6 +82,7 @@ export default class BallScript extends cc.Component {
                 this.MainScript_.reSetBlock();
             } else {
                 console.log("下一关");
+                Player.getInstance().level += 1;
                 this.MainScript_.nextLevel();
             }
         }
