@@ -16,7 +16,7 @@ export default class BlockScript extends cc.Component {
         this._blockInfo.x = this.node.x;
         this._blockInfo.y = this.node.y;
         this._blockInfo.info = this.getPyhCollider().tag;
-        this._blockInfo.rotation = this.node.angle;
+        // this._blockInfo.rotation = this.node.angle;
         // this._blockInfo.scale = this.node.scale;
         this._blockInfo.prefab = this.node.name;
         return this._blockInfo;
@@ -64,8 +64,8 @@ export default class BlockScript extends cc.Component {
      * @param rotation
      */
     initRotation(rotation: number) {
-        this.node.angle = rotation
-
+        this.node.angle =rotation;
+        this._blockInfo.rotation = rotation;
     }
 
 
@@ -119,7 +119,6 @@ export default class BlockScript extends cc.Component {
         this.node.height = this.node.height * scale
         this.node.children[0].scaleX = scale
         this.node.children[0].scaleY = scale
-
 
 
         if (this.getPyhCollider().tag == blockType.line) {

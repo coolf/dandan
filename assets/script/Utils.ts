@@ -217,7 +217,7 @@ let turnText = function (text, color: cc.Color = null) {
     Lable.string = text
     Lable.horizontalAlign = cc.Label.HorizontalAlign.CENTER;
     node.x = -cc.winSize.width / 2;
-
+    node.zIndex = 9999;
     cc.tween(node)
         .to(0.5, {position: cc.v3(0, 0)}, {easing: 'quintIn'})
         .to(1.5, {position: cc.v3(0, 0)})
@@ -341,6 +341,21 @@ let requests = {
     },
 }
 
+/**
+ * 获取guid
+ */
+let guid = () => {
+
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+
+        return v.toString(16);
+
+    });
+
+}
+
 
 let wxGame = cc.sys.platform === cc.sys.WECHAT_GAME;
 
@@ -371,6 +386,7 @@ export {
     , loading
     , requests
     , wxGame
+    , guid
 };
 
 

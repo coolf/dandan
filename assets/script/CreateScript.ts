@@ -5,7 +5,7 @@
 // Learn life-cycle callbacks:
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
-import {click} from "./Utils";
+import {click, turnText} from "./Utils";
 import {blockName, blockType, resBlockType} from "./config";
 import BlockCreateScript from "./common/BlockCreateScript";
 import BlockScript from "./common/BlockScript";
@@ -98,8 +98,10 @@ export default class CreateScript extends cc.Component {
                 // console.log(blockName[btn.name])
                 // this[btn.name]()
                 this.pullPanel();
-                this.addBlockInfo(btn);
                 this.pullAddBlock();
+                this.scheduleOnce(() => {
+                    this.addBlockInfo(btn);
+                }, 0.35);
             });
         })
 
@@ -162,20 +164,22 @@ export default class CreateScript extends cc.Component {
     }
 
     addBlockInfo(node: cc.Node) {
+        turnText("调整属性,点击生成组件", new cc.Color(0, 0, 0))
         // 修改config名字
         this.blockInfo.prefab = node.name;
-        // console.log(node.name)
+        console.log(node.name)
 
         if (this.blockInfo.prefab == 'block_xian') this.blockInfo.info = blockType.line;
 
         this.addBlockTitle.getComponent(cc.Label).string = `添加一个{${blockName[node.name]}}模块`
         cc.resources.load('prefab/' + node.name, cc.Prefab, (err, prefab: cc.Prefab) => {
             let node = cc.instantiate(prefab);
-            // console.log(node)
             node.name = "block";
             node.parent = this.addBlockPanelNode;
+            node.zIndex = 999;
             node.y = this.addBlockPanelNode.height / 2 - 100 - node.height / 2;
-
+            // console.log(node)
+            // console.log(this.addBlockPanelNode.children)
         })
     }
 
@@ -265,6 +269,8 @@ export default class CreateScript extends cc.Component {
             if (this.blockInfo.prefab == 'block_xian') this.blockNode().children[1].angle = ((0.5 - s.progress) * 360)
         }
 
+        // console.log("角度")
+        // console.log(this.blockNode().children[0].angle);
         this.blockInfo.rotation = this.blockNode().children[0].angle;
     }
 
@@ -295,6 +301,7 @@ export default class CreateScript extends cc.Component {
      */
     addBlock() {
         // console.log(this.blockInfo);
+        turnText('按住拖动组件，完成布局', new cc.Color(0, 0, 0))
         let item = this.blockInfo;
         console.log(item)
 
@@ -303,14 +310,15 @@ export default class CreateScript extends cc.Component {
 
             let node = cc.instantiate(prefab);
             node.name = this.blockInfo.prefab
-            node.parent = this.blockParentNode();
             node.addComponent(BlockCreateScript);
             node.getComponent(BlockScript).initType(item.info);
             // node.getComponent(BlockScript).blockInfo = item;
             if (item.rotation) node.getComponent(BlockScript).initRotation(item.rotation)
             if (item.scale) node.getComponent(BlockScript).initScale(item.scale)
             if (item.rotate) node.getComponent(BlockScript).initRotate()
-            if (item.float) node.getComponent(BlockScript).initFloat(item.float)
+            if (item.float) node.getComponent(BlockScript).initFloat(item.float);
+            node.parent = this.blockParentNode();
+
             node.x = item.x;
             node.y = item.y;
             node.scale = 0.7
@@ -400,8 +408,29 @@ export default class CreateScript extends cc.Component {
 
             }
         })
-        console.log(JSON.stringify(levelBlockType))
+        let data = JSON.stringify(levelBlockType);
+        console.log(data)
+        // @ts-ignore
+        wx.setClipboardData({
+            data: data,
+            success: function (res) {
+                // self.setData({copyTip:true}),
+                // @ts-ignore
+                wx.showModal({
+                    title: '提示',
+                    content: '复制成功',
+                    success: function (res) {
+                        if (res.confirm) {
+                            console.log('确定')
+                        } else if (res.cancel) {
+                            console.log('取消')
+                        }
+                    }
+                })
+            }
+        });
     }
+
 
     // update (dt) {}
 }

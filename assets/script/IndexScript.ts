@@ -24,11 +24,17 @@ export default class IndexScript extends cc.Component {
 
 
     onLoad() {
-        openWuli()
+        openWuli();
+        cc.resources.loadDir('prefab');
+        cc.resources.loadDir('img');
         this.initBall();
-        if (wxGame) this.wxLogin();
+        if (wxGame){
+            this.wxShareShow();
+            this.wxLogin();
+        };
         this.initTouch();
     }
+
 
     initTouch() {
         click(this.startNode, () => {
@@ -49,8 +55,15 @@ export default class IndexScript extends cc.Component {
         })
     }
 
-    start() {
-
+    /**
+     * 微信分享显示
+     */
+    wxShareShow() {
+        // @ts-ignore
+        wx.showShareMenu({
+            withShareTicket: true,
+            menus: ['shareAppMessage', 'shareTimeline']
+        })
     }
 
     /**

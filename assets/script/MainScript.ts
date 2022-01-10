@@ -35,9 +35,10 @@ export default class MainScript extends cc.Component {
 
 
     onLoad() {
+        openWuli()
         this.blockParent.zIndex = 99;
-        this.initScript();
         this.initTouch();
+        this.initScript();
 
 
         // loading.start()
@@ -94,6 +95,7 @@ export default class MainScript extends cc.Component {
             let newPos: cc.Vec2 = new cc.Vec2(this.touch_change.end.x - this.touch_change.start.x, this.touch_change.end.y - this.touch_change.start.y);
             newPos.x = newPos.x / distance * ballSpeed;
             newPos.y = newPos.y / distance * ballSpeed;
+
             this.setBallLaunch(newPos);
         })
         clickMove(this.node, (_: cc.Event.EventTouch) => {
@@ -204,7 +206,6 @@ export default class MainScript extends cc.Component {
      */
     reSetBlock() {
         //todo 消失未显示。待修复
-        console.log('222')
         this.blockParent.children.forEach(_ => {
             // 未通关显示隐藏的块块
             if (!_.children[0].active && (this.getBlockTag(_) == blockType.white || this.getBlockTag(_) == blockType.line)) {
@@ -267,9 +268,9 @@ export default class MainScript extends cc.Component {
      */
     getBlockTag(node: cc.Node): number {
         // 兼容瞄准的小球
-        // if (node.children.length == 1) {
-        //     node = node.children[0]
-        // }
+        if (node.children.length) {
+            node = node.children[0]
+        }
         if (node.getComponent(cc.PhysicsBoxCollider)) return node.getComponent(cc.PhysicsBoxCollider).tag
         if (node.getComponent(cc.PhysicsCircleCollider)) return node.getComponent(cc.PhysicsCircleCollider).tag
         if (node.getComponent(cc.PhysicsChainCollider)) return node.getComponent(cc.PhysicsChainCollider).tag
