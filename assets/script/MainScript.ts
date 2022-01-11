@@ -5,7 +5,7 @@
 // Learn life-cycle callbacks:
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
-import {click, clickEnd, clickMove, getData, loading, openWuli, requests, setData, wxGame} from "./Utils";
+import {click, clickEnd, clickMove, getData, loading, loadScene, openWuli, requests, setData, wxGame} from "./Utils";
 import Player from "./Player";
 import {ballSpeed, blockName, blockType, levelApi, resBlockType} from "./config";
 import BlockScript from "./common/BlockScript";
@@ -65,6 +65,9 @@ export default class MainScript extends cc.Component {
      * 点击事件
      */
     initTouch() {
+        click(cc.find('Canvas/bg/btn1'), () => {
+            loadScene('Level')
+        });
 
         click(this.node, (_: cc.Event.EventTouch) => {
             if (this.isSuccess()) return;
@@ -121,24 +124,17 @@ export default class MainScript extends cc.Component {
             return;
         }
         loading.start();
-        if (wxGame) {
-            // @ts-ignore
-            wx.request({
-                url: levelApi(level),
-                success(_) {
-                    console.log(_)
-                    setData(`level${level}`, JSON.stringify(_.data));
-                    self.setLevelNpc(level)
-                    loading.stop();
-                }
-            })
-        } else {
-            requests.get(levelApi(level), (_: resBlockType) => {
-                setData(`level${level}`, JSON.stringify(_));
+        requests.get(levelApi(level), (_) => {
+            loading.stop();
+            if (_.code == 200) {
+                setData(`level${level}`, _.data.level_content);
                 self.setLevelNpc(level)
-                loading.stop();
-            })
-        }
+            } else {
+                alert(_.msg);
+            }
+
+
+        })
 
     }
 
@@ -278,8 +274,9 @@ export default class MainScript extends cc.Component {
 
     nextLevel() {
         this.blockParent.removeAllChildren();
-        cc.find('Canvas/next_level').getComponent(NextLevelScript).show(Player.getInstance().level, () => {
-            this.loadLevelNpc(Player.getInstance().level)
+        cc.find('Canvas/next_level').getComponent(NextLevelScript).show(parseInt(getData('level')), () => {
+            console.log(Player.getInstance().level)
+            this.loadLevelNpc(parseInt(getData('level')))
         })
 
 

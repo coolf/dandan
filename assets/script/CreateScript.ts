@@ -5,10 +5,11 @@
 // Learn life-cycle callbacks:
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
-import {click, turnText} from "./Utils";
-import {blockName, blockType, resBlockType} from "./config";
+import {alert, click, copyToClip, loadScene, turnText, wxGame} from "./Utils";
+import {apiUrl, blockName, blockType, resBlockType} from "./config";
 import BlockCreateScript from "./common/BlockCreateScript";
 import BlockScript from "./common/BlockScript";
+import Player from "./Player";
 
 const {ccclass, property} = cc._decorator;
 
@@ -57,9 +58,8 @@ export default class CreateScript extends cc.Component {
 
 
     onLoad() {
+
         // 要生成的block 块
-
-
         this.addBlockBtn = cc.find('Canvas/addBlockPanel/确定');
         this.addBlockTitle = cc.find('Canvas/addBlockPanel/title');
         cc.resources.loadDir("img/openPanel", cc.SpriteFrame, (err, sp: cc.SpriteFrame[]) => {
@@ -75,6 +75,14 @@ export default class CreateScript extends cc.Component {
         click(saveLevelBtn, () => {
             this.saveLevelInfo();
         }, false)
+
+
+        /**
+         * 返回首页
+         */
+        click(cc.find('Canvas/btn1'), () => {
+            loadScene('Index');
+        })
 
     }
 
@@ -106,6 +114,15 @@ export default class CreateScript extends cc.Component {
         })
 
 
+        /**
+         * 取消生成
+         */
+        click(cc.find('Canvas/addBlockPanel/取消'), _ => {
+            this.pullAddBlock();
+        })
+        /**
+         * 确定生成点击
+         */
         click(this.addBlockBtn, () => {
             // console.log(this.blockInfo)
             this.addBlock();
@@ -301,7 +318,7 @@ export default class CreateScript extends cc.Component {
      */
     addBlock() {
         // console.log(this.blockInfo);
-        turnText('按住拖动组件，完成布局', new cc.Color(0, 0, 0))
+        turnText('按住拖动组件，双击移除', new cc.Color(0, 0, 0))
         let item = this.blockInfo;
         console.log(item)
 
@@ -410,27 +427,45 @@ export default class CreateScript extends cc.Component {
         })
         let data = JSON.stringify(levelBlockType);
         console.log(data)
-        // @ts-ignore
-        wx.setClipboardData({
-            data: data,
-            success: function (res) {
-                // self.setData({copyTip:true}),
-                // @ts-ignore
-                wx.showModal({
-                    title: '提示',
-                    content: '复制成功',
-                    success: function (res) {
-                        if (res.confirm) {
-                            console.log('确定')
-                        } else if (res.cancel) {
-                            console.log('取消')
-                        }
-                    }
-                })
+
+
+        Player.getInstance().setLevelContent(data, (_) => {
+            if (_.code == 200) {
+                console.log(_.data.uuid);
+                console.log("分享关卡")
+                this.share(_.data.uuid)
+            } else {
+                alert('保存云端失败，请联系客服')
             }
         });
+
+
     }
 
+    share(uuid) {
+        let shareId = 'uuid=' + uuid;
+        if (wxGame) {
+            // @ts-ignore
+            wx.shareAppMessage({
+                title: "我创建了一个非常好玩的关卡。快来试一下吧",
+                imageUrl: `${apiUrl.replace('Api/', 'share.png')}`,
+                query: shareId,
+
+            })
+        } else {
+            let url = location.origin + location.pathname + '?' + shareId;
+            copyToClip(url, "关卡链接复制成功，分享朋友打开试试")
+
+        }
+    }
+
+    onEnable() {
+        cc.game.on(cc.game.EVENT_SHOW, function () {
+            console.log("游戏进入前台");
+            Player.getInstance().getShareInfo();
+            //this.doSomeThing();
+        }, this);
+    }
 
     // update (dt) {}
 }

@@ -4,8 +4,9 @@ let scene = {
 
 }
 
-let levelApi = (level) => `https://tool.teqiyi.com/dandan/Level${level}.json?v=${new Date().getTime()}`;
-
+// let apiUrl = 'http://0.0.0.0:8088/Api/';
+let apiUrl = 'https://dandan.teqiyi.com/Api/';
+let levelApi = (level) => `${apiUrl}Level/?level=${level}`;
 let ballSpeed = 800;
 
 
@@ -57,4 +58,4 @@ export type resBlockType =
         }[]
     }
 
-export {scene, ballSpeed, levelApi, blockType, blockName};
+export {scene, ballSpeed, levelApi, blockType, blockName, apiUrl};

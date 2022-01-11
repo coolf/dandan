@@ -10,6 +10,7 @@ import MainScript from "../MainScript";
 import Player from "../Player";
 import {blockType} from "../config";
 import AimBallScript from "./AimBallScript";
+import {getData, setData} from "../Utils";
 
 const {ccclass, property} = cc._decorator;
 
@@ -82,7 +83,15 @@ export default class BallScript extends cc.Component {
                 this.MainScript_.reSetBlock();
             } else {
                 console.log("下一关");
-                Player.getInstance().level += 1;
+                // @ts-ignore
+
+
+                if (parseInt(getData('level')) == Player.getInstance().level && Player.getInstance().level <= Player.getInstance().levelNum) {
+                    Player.getInstance().level++;
+                    Player.getInstance().nextLevel();
+                }
+                let nextLevel = parseInt(getData('level')) + 1;
+                setData('level', nextLevel)
                 this.MainScript_.nextLevel();
             }
         }

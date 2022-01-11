@@ -6,6 +6,7 @@
  */
 import Texture2D = cc.Texture2D;
 import Player from "./Player";
+import {levelApi} from "./config";
 
 let click = function (node: cc.Node, func: Function, effect: boolean = true): void {
     node.on(cc.Node.EventType.TOUCH_START, (_: cc.Event.EventTouch) => {
@@ -228,7 +229,19 @@ let turnText = function (text, color: cc.Color = null) {
         .start()
     node.parent = cc.find('Canvas');
 }
-
+let copyToClip = (content, message) => {
+    let aux = document.createElement("input");
+    aux.setAttribute("value", content);
+    document.body.appendChild(aux);
+    aux.select();
+    document.execCommand("copy");
+    document.body.removeChild(aux);
+    if (message == null) {
+        alert("复制成功");
+    } else {
+        alert(message);
+    }
+}
 
 /**
  * loading 类
@@ -314,7 +327,17 @@ let loading = {
 }
 
 let requests = {
+
     get(url, cb) {
+        if (wxGame) {
+            // @ts-ignore
+            wx.request({
+                url: url,
+                success(_) {
+                    cb(_.data)
+                }
+            })
+        }
         fetch(url, {
             "headers": {
                 "Content-Type": "application/json;charset=UTF-8"
@@ -327,17 +350,30 @@ let requests = {
             })
     },
     post(url, data, cb) {
-        fetch(url, {
-            "headers": {
-                "Content-Type": "application/json;charset=UTF-8"
-            },
-            method: 'POST',
-            body: JSON.stringify(data),
-        })
-            .then(response => response.json())
-            .then(response => {
-                cb(response)
+        if (wxGame) {
+            // @ts-ignore
+            wx.request({
+                method: "POST",
+                url: url,
+                data,
+                success(_) {
+                    cb(_.data)
+                }
             })
+        } else {
+            fetch(url, {
+                "headers": {
+                    "Content-Type": "application/json;charset=UTF-8"
+                },
+                method: 'POST',
+                body: JSON.stringify(data),
+            })
+                .then(response => response.json())
+                .then(response => {
+                    cb(response)
+                })
+        }
+
     },
 }
 
@@ -356,8 +392,36 @@ let guid = () => {
 
 }
 
+let getQueryVariable = (variable) => {
+    var query = window.location.search.substring(1);
+    var vars = query.split("&");
+    for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split("=");
+        if (pair[0] == variable) {
+            return pair[1];
+        }
+    }
+    return (false);
+}
 
 let wxGame = cc.sys.platform === cc.sys.WECHAT_GAME;
+
+
+let alert = (msg) => {
+    let wAlert = window.alert;
+    if (wxGame) {
+        // @ts-ignore
+        wx.showToast({
+            title: msg,
+            icon: 'success',
+            duration: 2000
+        })
+    } else {
+        wAlert(msg)
+    }
+
+}
+
 
 /**
  * 判断是否debug 模式
@@ -387,6 +451,10 @@ export {
     , requests
     , wxGame
     , guid
+    , alert
+    , copyToClip
+    , getQueryVariable
+
 };
 
 

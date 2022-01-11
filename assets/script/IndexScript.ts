@@ -24,21 +24,36 @@ export default class IndexScript extends cc.Component {
 
 
     onLoad() {
+        Player.getInstance().getShareInfo();
+
         openWuli();
         cc.resources.loadDir('prefab');
         cc.resources.loadDir('img');
         this.initBall();
-        if (wxGame){
+        this.initTouch();
+
+        if (getData('openid')) {
+
+            // 走缓存登录
+            console.log(Player.getInstance().openid)
+            console.log(Player.getInstance().level)
+            Player.getInstance().webLogin(Player.getInstance().openid);
+            return;
+        }
+
+        if (wxGame) {
             this.wxShareShow();
             this.wxLogin();
-        };
-        this.initTouch();
+        } else {
+            // 游客
+            Player.getInstance().webLogin();
+        }
     }
 
 
     initTouch() {
         click(this.startNode, () => {
-            loadScene('Main')
+            loadScene('Level')
         })
 
         click(this.createNode, () => {
@@ -55,6 +70,7 @@ export default class IndexScript extends cc.Component {
         })
     }
 
+
     /**
      * 微信分享显示
      */
@@ -66,19 +82,12 @@ export default class IndexScript extends cc.Component {
         })
     }
 
+
     /**
      * 微信登录保存信息
      */
     wxLogin() {
         let self = this;
-        if (getData('openid')) {
-
-            // 走缓存登录
-            console.log(Player.getInstance().openid)
-            console.log(Player.getInstance().level)
-            return;
-        }
-
 
         // 获取授权登录
         // @ts-ignore
@@ -87,7 +96,7 @@ export default class IndexScript extends cc.Component {
                 console.log(res)
                 if (res.code) {
                     //发起网络请求
-                    self.getOpenId(res);
+                    Player.getInstance().getOpenId(res);
                 } else {
                     console.log('登录失败！' + res.errMsg)
                 }
@@ -95,26 +104,6 @@ export default class IndexScript extends cc.Component {
         })
     }
 
-
-    getOpenId(data) {
-        loading.start();
-        // @ts-ignore
-        wx.request({
-            method: "POST",
-            url: 'https://dandan.teqiyi.com/Api/Login/getOpenid',
-            data,
-            success(_) {
-                loading.stop();
-                if (_.data.code == 200) {
-                    Player.getInstance().openid = _.data.data.openid;
-                    Player.getInstance().level = _.data.data.level
-
-                }
-                console.log(_.data.data.openid)
-                console.log("登录成功")
-            }
-        })
-    }
 
     // update (dt) {}
 }
