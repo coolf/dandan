@@ -7,6 +7,7 @@
 
 import {click, loadScene, setData, turnText} from "../Utils";
 import Player from "../Player";
+import {playType, scene} from "../config";
 
 const {ccclass, property} = cc._decorator;
 
@@ -29,7 +30,8 @@ export default class LevelStateScript extends cc.Component {
             }
             // Player.getInstance().level = this.num;
             setData('level', this.num)
-            loadScene('Main')
+            Player.getInstance().playType = playType.game;
+            loadScene(scene.Main)
         })
     }
 

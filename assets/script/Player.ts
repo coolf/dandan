@@ -1,5 +1,6 @@
 import {alert, getData, getQueryVariable, guid, loading, requests, setData, wxGame} from "./Utils";
-import {apiUrl} from "./config";
+import {apiUrl, levelApi} from "./config";
+import SharePanelScript from "./common/SharePanelScript";
 
 /**
  *
@@ -42,6 +43,10 @@ export default class Player {
     public level: number = 1;
 
     private _levelNum: number = null;
+
+
+    // 游戏玩法
+    public playType: number = null;
 
     /**
      * 实例
@@ -125,6 +130,7 @@ export default class Player {
      * @param content
      */
     public setLevelContent(content, cb) {
+        loading.start();
         let url = apiUrl + 'Level/setLevel'
         let data = {
             openid: this.openid,
@@ -132,6 +138,7 @@ export default class Player {
         }
 
         requests.post(url, data, _ => {
+            loading.stop();
             console.log(_);
             cb(_);
         })
@@ -141,16 +148,56 @@ export default class Player {
      * 获取分享info
      */
     public getShareInfo() {
+        let this_ = this;
         if (wxGame) {
             // @ts-ignore
             var obj = wx.getLaunchOptionsSync();
             console.log(obj);
             if (obj.query.uuid) {
-                alert(obj.query.uuid)
+                this_.creatSharePanel(obj.query.uuid);
+                return;
             }
+            // @ts-ignore
+            wx.getClipboardData({
+                success(res) {
+                    console.log(`复制的东西${res.data}`);
+                    if (res.data.indexOf('uuid=') != -1) {
+                        this_.creatSharePanel(res.data.replace("uuid=", ""));
+                        //清空剪贴板 防止重复调用
+                        // @ts-ignore
+                        wx.setClipboardData({
+                            data: ' ',
+                        });
+                    }
+                }
+            })
+
         } else {
-            getQueryVariable('uuid');
+            let uuid = getQueryVariable('uuid');
+            if (!uuid) {
+                return;
+            }
+
+            console.log(uuid)
+            this.creatSharePanel(uuid);
         }
+    }
+
+    /**
+     * 拉起确认开始游戏面板
+     * @param uuid
+     * @private
+     */
+    private creatSharePanel(uuid) {
+        requests.get(levelApi(uuid), (_) => {
+            if (_.code == 200) {
+                cc.resources.load('prefab/sharePanel', cc.Prefab, (err, prefab: cc.Prefab) => {
+                    let node = cc.instantiate(prefab)
+                    node.parent = this.CanvasNode();
+                    node.getComponent(SharePanelScript).init(uuid);
+                })
+            }
+        })
     }
 
 }

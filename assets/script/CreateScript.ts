@@ -6,7 +6,7 @@
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
 import {alert, click, copyToClip, loadScene, turnText, wxGame} from "./Utils";
-import {apiUrl, blockName, blockType, resBlockType} from "./config";
+import {apiUrl, blockName, blockType, resBlockType, scene} from "./config";
 import BlockCreateScript from "./common/BlockCreateScript";
 import BlockScript from "./common/BlockScript";
 import Player from "./Player";
@@ -58,6 +58,10 @@ export default class CreateScript extends cc.Component {
 
 
     onLoad() {
+        cc.game.on(cc.game.EVENT_SHOW, function () {
+            console.log("游戏进入前台");
+            Player.getInstance().getShareInfo();
+        }, this);
 
         // 要生成的block 块
         this.addBlockBtn = cc.find('Canvas/addBlockPanel/确定');
@@ -74,14 +78,14 @@ export default class CreateScript extends cc.Component {
         let saveLevelBtn = cc.find('Canvas/保存关卡信息');
         click(saveLevelBtn, () => {
             this.saveLevelInfo();
-        }, false)
+        }, true)
 
 
         /**
          * 返回首页
          */
         click(cc.find('Canvas/btn1'), () => {
-            loadScene('Index');
+            loadScene(scene.Index);
         })
 
     }
@@ -431,8 +435,8 @@ export default class CreateScript extends cc.Component {
 
         Player.getInstance().setLevelContent(data, (_) => {
             if (_.code == 200) {
-                console.log(_.data.uuid);
-                console.log("分享关卡")
+                // console.log(_.data.uuid);
+                // console.log("分享关卡")
                 this.share(_.data.uuid)
             } else {
                 alert('保存云端失败，请联系客服')
@@ -451,7 +455,18 @@ export default class CreateScript extends cc.Component {
                 imageUrl: `${apiUrl.replace('Api/', 'share.png')}`,
                 query: shareId,
 
+            });
+            // @ts-ignore
+            wx.setClipboardData({
+                data: shareId,
+                success(res) {
+                    // console.log('复制')
+                    // console.log(res)
+                    // console.log("====================");
+                }
             })
+
+
         } else {
             let url = location.origin + location.pathname + '?' + shareId;
             copyToClip(url, "关卡链接复制成功，分享朋友打开试试")
@@ -459,13 +474,6 @@ export default class CreateScript extends cc.Component {
         }
     }
 
-    onEnable() {
-        cc.game.on(cc.game.EVENT_SHOW, function () {
-            console.log("游戏进入前台");
-            Player.getInstance().getShareInfo();
-            //this.doSomeThing();
-        }, this);
-    }
 
     // update (dt) {}
 }

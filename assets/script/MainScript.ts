@@ -7,7 +7,7 @@
 
 import {click, clickEnd, clickMove, getData, loading, loadScene, openWuli, requests, setData, wxGame} from "./Utils";
 import Player from "./Player";
-import {ballSpeed, blockName, blockType, levelApi, resBlockType} from "./config";
+import {ballSpeed, blockName, blockType, levelApi, playType, resBlockType, scene} from "./config";
 import BlockScript from "./common/BlockScript";
 import AimBallScript from "./common/AimBallScript";
 import EndBallScript from "./common/EndBallScript";
@@ -40,6 +40,7 @@ export default class MainScript extends cc.Component {
         this.initTouch();
         this.initScript();
 
+        console.log('share点击测试');
 
         // loading.start()
 
@@ -66,7 +67,7 @@ export default class MainScript extends cc.Component {
      */
     initTouch() {
         click(cc.find('Canvas/bg/btn1'), () => {
-            loadScene('Level')
+            loadScene(scene.Level)
         });
 
         click(this.node, (_: cc.Event.EventTouch) => {
@@ -116,7 +117,7 @@ export default class MainScript extends cc.Component {
      * 加载关卡info
      * @param level
      */
-    loadLevelNpc(level: number) {
+    loadLevelNpc(level: number | string) {
         let self = this;
         if (getData(`level${level}`)) {
             this.setLevelNpc(level);
@@ -274,8 +275,13 @@ export default class MainScript extends cc.Component {
 
     nextLevel() {
         this.blockParent.removeAllChildren();
+        if (Player.getInstance().playType == playType.share) {
+            console.log('share')
+            this.loadLevelNpc(getData('shareId'));
+            return;
+        }
         cc.find('Canvas/next_level').getComponent(NextLevelScript).show(parseInt(getData('level')), () => {
-            console.log(Player.getInstance().level)
+            // console.log(Player.getInstance().level)
             this.loadLevelNpc(parseInt(getData('level')))
         })
 

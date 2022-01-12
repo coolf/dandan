@@ -337,17 +337,19 @@ let requests = {
                     cb(_.data)
                 }
             })
-        }
-        fetch(url, {
-            "headers": {
-                "Content-Type": "application/json;charset=UTF-8"
-            },
-            method: 'GET',
-        })
-            .then(response => response.json())
-            .then(response => {
-                cb(response)
+        } else {
+            fetch(url, {
+                "headers": {
+                    "Content-Type": "application/json;charset=UTF-8"
+                },
+                method: 'GET',
             })
+                .then(response => response.json())
+                .then(response => {
+                    cb(response)
+                })
+        }
+
     },
     post(url, data, cb) {
         if (wxGame) {

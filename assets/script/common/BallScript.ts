@@ -8,9 +8,9 @@
 import BlockScript from "./BlockScript";
 import MainScript from "../MainScript";
 import Player from "../Player";
-import {blockType} from "../config";
+import {blockType, playType, scene} from "../config";
 import AimBallScript from "./AimBallScript";
-import {getData, setData} from "../Utils";
+import {alert, getData, loadScene, playAudio, setData} from "../Utils";
 
 const {ccclass, property} = cc._decorator;
 
@@ -42,17 +42,27 @@ export default class BallScript extends cc.Component {
         //白块
         if (otherNodeType == blockType.white) {
             // otherCollider.node.getComponent(BlockScript).createBorder();
+            cc.resources.load('mp3/白块', cc.AudioClip, (err, mp3: cc.AudioClip) => {
+                playAudio(mp3)
+            })
             otherCollider.node.parent.getComponent(BlockScript).createBorder();
             this.hideAimBall();
         }
         // 黑块
         if (otherNodeType == blockType.ban) {
+            cc.resources.load('mp3/黑块', cc.AudioClip, (err, mp3: cc.AudioClip) => {
+                playAudio(mp3)
+            })
+
             otherCollider.node.parent.getComponent(BlockScript).createBanSize();
             this.hideAimBall();
         }
         //线
         if (otherNodeType == blockType.line) {
-            console.log("线")
+            // console.log("线")
+            cc.resources.load('mp3/白块', cc.AudioClip, (err, mp3: cc.AudioClip) => {
+                playAudio(mp3)
+            })
             otherCollider.node.parent.getComponent(BlockScript).createLineEffect();
         }
 
@@ -82,6 +92,14 @@ export default class BallScript extends cc.Component {
             if (!this.MainScript_.isSuccess()) {
                 this.MainScript_.reSetBlock();
             } else {
+                if (Player.getInstance().playType == playType.share) {
+                    alert('恭喜您通过成功,2秒后返回首页')
+                    this.scheduleOnce(() => {
+                        loadScene(scene.Index);
+                    }, 2)
+                    return;
+                }
+
                 console.log("下一关");
                 // @ts-ignore
 

@@ -6,7 +6,7 @@
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
 import {click, getData, loading, loadScene, openWuli, randomNum, setData, wxGame} from "./Utils";
-import {levelApi} from "./config";
+import {levelApi, scene} from "./config";
 import Player from "./Player";
 
 const {ccclass, property} = cc._decorator;
@@ -29,6 +29,7 @@ export default class IndexScript extends cc.Component {
         openWuli();
         cc.resources.loadDir('prefab');
         cc.resources.loadDir('img');
+        cc.resources.loadDir('mp3');
         this.initBall();
         this.initTouch();
 
@@ -38,6 +39,9 @@ export default class IndexScript extends cc.Component {
             console.log(Player.getInstance().openid)
             console.log(Player.getInstance().level)
             Player.getInstance().webLogin(Player.getInstance().openid);
+            if (wxGame) {
+                this.wxShareShow();
+            }
             return;
         }
 
@@ -53,11 +57,11 @@ export default class IndexScript extends cc.Component {
 
     initTouch() {
         click(this.startNode, () => {
-            loadScene('Level')
+            loadScene(scene.Level)
         })
 
         click(this.createNode, () => {
-            loadScene('Create')
+            loadScene(scene.Create)
         })
     }
 

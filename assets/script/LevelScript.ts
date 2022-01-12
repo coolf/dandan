@@ -8,6 +8,7 @@
 import Player from "./Player";
 import LevelStateScript from "./common/LevelStateScript";
 import {click, loadScene} from "./Utils";
+import {playType, scene} from "./config";
 
 const {ccclass, property} = cc._decorator;
 
@@ -37,8 +38,9 @@ export default class NewClass extends cc.Component {
 
         this.initTouch()
         this.page_num = Math.ceil(Player.getInstance().levelNum / this.one_page_num);
-        console.log(`总页数${this.page_num}`)
+        // console.log(`总页数${this.page_num}`)
         this.setPage();
+
     }
 
     start() {
@@ -55,7 +57,7 @@ export default class NewClass extends cc.Component {
             this.setPage();
         })
         click(cc.find('Canvas/btn1'), () => {
-            loadScene('Index')
+            loadScene(scene.Index)
         })
     }
 
@@ -86,7 +88,7 @@ export default class NewClass extends cc.Component {
                     node.x = startPos.x + (wNum * 130);
                     node.y = startPos.y - (hNum * 130);
                     node.parent = this.blockParent;
-                    console.log(`关卡：${levelNum},是否OK：${Player.getInstance().level}`);
+                    // console.log(`关卡：${levelNum},是否OK：${Player.getInstance().level}`);
                     node.getComponent(LevelStateScript).init(levelNum, levelNum <= Player.getInstance().level);
                     wNum++;
                     if (wNum == 4) {
@@ -99,7 +101,7 @@ export default class NewClass extends cc.Component {
                         node.x = startPos.x + (wNum * 130);
                         node.y = startPos.y - (hNum * 130);
                         node.parent = this.blockParent;
-                        console.log(`关卡：${levelNum},是否OK：${Player.getInstance().level}`);
+                        // console.log(`关卡：${levelNum},是否OK：${Player.getInstance().level}`);
                         node.getComponent(LevelStateScript).init(levelNum, levelNum <= Player.getInstance().level);
                         wNum++;
                         if (wNum == 4) {

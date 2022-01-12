@@ -1,7 +1,13 @@
 let scene = {
     Index: 'Index',
-    Main: 'Main'
+    Main: 'Main',
+    Level: 'Level',
+    Create: 'Create'
 
+}
+let playType = {
+    game: 0,
+    share: 1
 }
 
 // let apiUrl = 'http://0.0.0.0:8088/Api/';
@@ -58,4 +64,4 @@ export type resBlockType =
         }[]
     }
 
-export {scene, ballSpeed, levelApi, blockType, blockName, apiUrl};
+export {scene, ballSpeed, levelApi, blockType, blockName, apiUrl, playType};
