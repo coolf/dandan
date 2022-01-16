@@ -413,10 +413,14 @@ let alert = (msg) => {
     let wAlert = window.alert;
     if (wxGame) {
         // @ts-ignore
-        wx.showToast({
-            title: msg,
-            icon: 'success',
-            duration: 2000
+        // wx.showToast({
+        //     title: msg,
+        //     icon: 'success',
+        //     duration: 2000
+        // })
+        wx.showModal({
+            content: msg,
+            showCancel: false
         })
     } else {
         wAlert(msg)
@@ -424,6 +428,17 @@ let alert = (msg) => {
 
 }
 
+// 微信提示
+let toast = (msg) => {
+    if (!wxGame) return;
+    // @ts-ignore
+    wx.showToast({
+        title: msg,
+        icon: 'success',
+        duration: 2000
+    })
+
+}
 
 /**
  * 判断是否debug 模式
@@ -456,6 +471,7 @@ export {
     , alert
     , copyToClip
     , getQueryVariable
+    , toast
 
 };
 

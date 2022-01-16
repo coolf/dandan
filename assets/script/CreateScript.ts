@@ -59,10 +59,9 @@ export default class CreateScript extends cc.Component {
 
     onLoad() {
         cc.game.on(cc.game.EVENT_SHOW, function () {
-            console.log("游戏进入前台");
+            // console.log("游戏进入前台");
             Player.getInstance().getShareInfo();
         }, this);
-
         // 要生成的block 块
         this.addBlockBtn = cc.find('Canvas/addBlockPanel/确定');
         this.addBlockTitle = cc.find('Canvas/addBlockPanel/title');
@@ -188,7 +187,7 @@ export default class CreateScript extends cc.Component {
         turnText("调整属性,点击生成组件", new cc.Color(0, 0, 0))
         // 修改config名字
         this.blockInfo.prefab = node.name;
-        console.log(node.name)
+        // console.log(node.name)
 
         if (this.blockInfo.prefab == 'block_xian') this.blockInfo.info = blockType.line;
 
@@ -324,7 +323,7 @@ export default class CreateScript extends cc.Component {
         // console.log(this.blockInfo);
         turnText('按住拖动组件，双击移除', new cc.Color(0, 0, 0))
         let item = this.blockInfo;
-        console.log(item)
+        // console.log(item)
 
         cc.resources.load('prefab/' + this.blockInfo.prefab, cc.Prefab, (err, prefab: cc.Prefab) => {
             // console.log(prefab)
@@ -430,7 +429,12 @@ export default class CreateScript extends cc.Component {
             }
         })
         let data = JSON.stringify(levelBlockType);
-        console.log(data)
+        // console.log(data)
+
+        if (levelBlockType.block.length == 0 && levelBlockType.banBlock.length == 0) {
+            alert("请先点击右边👉 添加组件后生成")
+            return;
+        }
 
 
         Player.getInstance().setLevelContent(data, (_) => {

@@ -5,13 +5,26 @@
 // Learn life-cycle callbacks:
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
-import {click, clickEnd, clickMove, getData, loading, loadScene, openWuli, requests, setData, wxGame} from "./Utils";
+import {
+    alert,
+    click,
+    clickEnd,
+    clickMove,
+    getData,
+    loading,
+    loadScene,
+    openWuli,
+    requests,
+    setData,
+    wxGame
+} from "./Utils";
 import Player from "./Player";
 import {ballSpeed, blockName, blockType, levelApi, playType, resBlockType, scene} from "./config";
 import BlockScript from "./common/BlockScript";
 import AimBallScript from "./common/AimBallScript";
 import EndBallScript from "./common/EndBallScript";
 import NextLevelScript from "./common/NextLevelScript";
+import GameRecorderScript from "./common/GameRecorderScript";
 
 const {ccclass, property} = cc._decorator;
 
@@ -40,8 +53,6 @@ export default class MainScript extends cc.Component {
         this.initTouch();
         this.initScript();
 
-        console.log('share点击测试');
-
         // loading.start()
 
     }
@@ -58,6 +69,10 @@ export default class MainScript extends cc.Component {
 
         if (!Player.getInstance().CanvasNode().getComponent(EndBallScript)) {
             Player.getInstance().CanvasNode().addComponent(EndBallScript)
+        }
+        // if (!Player.getInstance().CanvasNode().getComponent(GameRecorderScript)) {
+        if (!Player.getInstance().CanvasNode().getComponent(GameRecorderScript) && wxGame) {
+            Player.getInstance().CanvasNode().addComponent(GameRecorderScript)
         }
     }
 
@@ -121,7 +136,7 @@ export default class MainScript extends cc.Component {
         let self = this;
         if (getData(`level${level}`)) {
             this.setLevelNpc(level);
-            console.log("本地加载")
+            // console.log("本地加载")
             return;
         }
         loading.start();
@@ -276,10 +291,17 @@ export default class MainScript extends cc.Component {
     nextLevel() {
         this.blockParent.removeAllChildren();
         if (Player.getInstance().playType == playType.share) {
-            console.log('share')
+            // console.log('share')
             this.loadLevelNpc(getData('shareId'));
             return;
         }
+
+        if (parseInt(getData('level')) > Player.getInstance().levelNum) {
+            alert("关卡已经全部完成,后面将持续更新");
+            return;
+        }
+
+
         cc.find('Canvas/next_level').getComponent(NextLevelScript).show(parseInt(getData('level')), () => {
             // console.log(Player.getInstance().level)
             this.loadLevelNpc(parseInt(getData('level')))

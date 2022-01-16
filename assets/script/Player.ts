@@ -48,6 +48,8 @@ export default class Player {
     // 游戏玩法
     public playType: number = null;
 
+
+
     /**
      * 实例
      */
@@ -79,7 +81,7 @@ export default class Player {
                 Player.getInstance().openid = _.data.openid;
                 Player.getInstance().level = _.data.level;
                 Player.getInstance().levelNum = _.data.levelNum;
-                console.log(Player.getInstance().levelNum, 'levelNum')
+                // console.log(Player.getInstance().levelNum, 'levelNum')
                 setData('level', Player.getInstance().level)
             } else {
                 alert("登录失败,请刷新小程序")
@@ -120,8 +122,36 @@ export default class Player {
             level: this.level
         }
         requests.post(url, data, (_) => {
-            console.log(_);
+            // console.log(_);
         })
+
+        // 提交微信排行版
+        if (wxGame) {
+            // @ts-ignore
+            wx.setUserCloudStorage({
+                KVDataList: [{
+                    key: "level",
+                    value: JSON.stringify({
+                        "wxgame": {
+                            "score": this.level,
+                            // "level": this.level,
+                            "update_time": new Date().getTime()/1000
+                        }
+                    })
+                }],
+                success: function (res) {
+                    console.log('--success res:', res);
+                },
+                fail: function (res) {
+                    console.log('--fail res:', res);
+                },
+                complete: function (res) {
+                    console.log('--complete res:', res);
+                },
+            })
+        }
+
+
     }
 
 
@@ -152,7 +182,7 @@ export default class Player {
         if (wxGame) {
             // @ts-ignore
             var obj = wx.getLaunchOptionsSync();
-            console.log(obj);
+            // console.log(obj);
             if (obj.query.uuid) {
                 this_.creatSharePanel(obj.query.uuid);
                 return;
@@ -160,7 +190,7 @@ export default class Player {
             // @ts-ignore
             wx.getClipboardData({
                 success(res) {
-                    console.log(`复制的东西${res.data}`);
+                    // console.log(`复制的东西${res.data}`);
                     if (res.data.indexOf('uuid=') != -1) {
                         this_.creatSharePanel(res.data.replace("uuid=", ""));
                         //清空剪贴板 防止重复调用
@@ -178,7 +208,7 @@ export default class Player {
                 return;
             }
 
-            console.log(uuid)
+            // console.log(uuid)
             this.creatSharePanel(uuid);
         }
     }

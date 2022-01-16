@@ -36,8 +36,8 @@ export default class IndexScript extends cc.Component {
         if (getData('openid')) {
 
             // 走缓存登录
-            console.log(Player.getInstance().openid)
-            console.log(Player.getInstance().level)
+            // console.log(Player.getInstance().openid)
+            // console.log(Player.getInstance().level)
             Player.getInstance().webLogin(Player.getInstance().openid);
             if (wxGame) {
                 this.wxShareShow();
