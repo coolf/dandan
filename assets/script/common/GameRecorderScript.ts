@@ -7,7 +7,7 @@
 
 import Asset = cc.Asset;
 import Player from "../Player";
-import {alert, click, clickEnd, toast} from "../Utils";
+import {alert, click, clickEnd, executeOnce, executeOnceDay, toast} from "../Utils";
 
 const {ccclass, property} = cc._decorator;
 
@@ -48,6 +48,12 @@ export default class GameRecorderScript extends cc.Component {
         this.videoShareTitle = cc.find('Canvas/videoShare/title')
         this.videoShare.zIndex = cc.macro.MAX_ZINDEX;
         if (this.recorder.isFrameSupported()) {
+            executeOnce('recorder', () => {
+                alert('您的手机支持录制对局,点击左上角的录制按钮即可录制分享好友')
+            });
+            executeOnceDay(() => {
+                toast('左上角按钮可以录制视频哦')
+            })
             this.initIcon();
         }
         // this.createShareBtn(2222);

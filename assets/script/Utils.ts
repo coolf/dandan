@@ -154,6 +154,32 @@ let creatWebView = function (node: cc.Node, View: any): cc.WebView {
 
 
 /**
+ * 每天只能执行一次
+ * @param cb
+ */
+let executeOnceDay = (cb: Function) => {
+    if (getData(getLocaleDateString())) {
+        return;
+    }
+    setData(getLocaleDateString(), 'true')
+    cb()
+}
+
+/**
+ * 全局只执行一次
+ * @param name
+ * @param cb
+ */
+let executeOnce = (name: string, cb: Function) => {
+    if (getData(name + 'executeOnce')) {
+        return;
+    }
+    setData(name + 'executeOnce', 'ok')
+    cb()
+
+}
+
+/**
  * 取cookie
  * @param cname
  */
@@ -472,7 +498,8 @@ export {
     , copyToClip
     , getQueryVariable
     , toast
-
+    , executeOnceDay
+    , executeOnce
 };
 
 
