@@ -5,7 +5,7 @@
 // Learn life-cycle callbacks:
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
-import {click, getData, loading, loadScene, openWuli, randomNum, setData, wxGame} from "./Utils";
+import {click, clickEnd, getData, loading, loadScene, openWuli, randomNum, setData, wxGame} from "./Utils";
 import {levelApi, scene} from "./config";
 import Player from "./Player";
 
@@ -24,8 +24,7 @@ export default class IndexScript extends cc.Component {
 
 
     onLoad() {
-        Player.getInstance().getShareInfo();
-
+        Player.getInstance().getShareInfo(); // 获取分享
         openWuli();
         cc.resources.loadDir('prefab');
         cc.resources.loadDir('img');
@@ -56,11 +55,24 @@ export default class IndexScript extends cc.Component {
 
 
     initTouch() {
-        click(this.startNode, () => {
+        // click(this.startNode, () => {
+        // })
+        clickEnd(this.startNode, () => {
+            Player.getInstance().subscribeMessage() //微信订阅
+            if (wxGame) {
+                // @ts-ignore
+                wx.reportEvent("start_game", {})
+            }
             loadScene(scene.Level)
+
         })
 
         click(this.createNode, () => {
+            if (wxGame) {
+                // @ts-ignore
+                wx.reportEvent("start_create", {})
+
+            }
             loadScene(scene.Create)
         })
     }

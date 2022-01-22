@@ -1,5 +1,5 @@
 import {alert, getData, getQueryVariable, guid, loading, requests, setData, wxGame} from "./Utils";
-import {apiUrl, levelApi} from "./config";
+import {apiUrl, levelApi, subscribeMessage} from "./config";
 import SharePanelScript from "./common/SharePanelScript";
 
 /**
@@ -47,7 +47,6 @@ export default class Player {
 
     // 游戏玩法
     public playType: number = null;
-
 
 
     /**
@@ -135,7 +134,7 @@ export default class Player {
                         "wxgame": {
                             "score": this.level,
                             // "level": this.level,
-                            "update_time": new Date().getTime()/1000
+                            "update_time": new Date().getTime() / 1000
                         }
                     })
                 }],
@@ -226,6 +225,26 @@ export default class Player {
                     node.parent = this.CanvasNode();
                     node.getComponent(SharePanelScript).init(uuid);
                 })
+            }
+        })
+    }
+
+    /**
+     * 订阅微信消息
+     */
+    public subscribeMessage() {
+        console.log("微信订阅")
+        if (!wxGame) return;
+        console.log("微信里面微信订阅")
+        // @ts-ignore
+        wx.requestSubscribeMessage({
+            tmplIds: subscribeMessage,
+            success(res) {
+                console.log(res)
+            },
+            fail(res){
+                console.log('error')
+                console.log(res)
             }
         })
     }

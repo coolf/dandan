@@ -28,6 +28,12 @@ let blockName = {
 
 }
 
+/**
+ * 微信订阅消息ID
+ */
+let subscribeMessage = ['eU53xiNBELtIzw4nQUm4HNZkQTnjGNopi0OxQpP-gKg'
+    , 'aaaGNtUi-j6374l0w2-H9jRsSHRcfOIzSYbOHTfW5xA'
+    , 'mPkpMygX1UuMYfYD6YkCZ47U3dtn9pdf8dQXeC17ymQ'];
 
 let blockType = {
     white: 0,
@@ -64,4 +70,4 @@ export type resBlockType =
         }[]
     }
 
-export {scene, ballSpeed, levelApi, blockType, blockName, apiUrl, playType};
+export {scene, ballSpeed, levelApi, blockType, blockName, apiUrl, playType,subscribeMessage};

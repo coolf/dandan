@@ -5,9 +5,6 @@
  * @param effect 是否开启点击特效
  */
 import Texture2D = cc.Texture2D;
-import Player from "./Player";
-import {levelApi} from "./config";
-
 let click = function (node: cc.Node, func: Function, effect: boolean = true): void {
     node.on(cc.Node.EventType.TOUCH_START, (_: cc.Event.EventTouch) => {
         func(_)

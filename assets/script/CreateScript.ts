@@ -454,6 +454,10 @@ export default class CreateScript extends cc.Component {
         let shareId = 'uuid=' + uuid;
         if (wxGame) {
             // @ts-ignore
+            wx.reportEvent("share_create", {
+
+            })
+            // @ts-ignore
             wx.shareAppMessage({
                 title: "我创建了一个非常好玩的关卡。快来试一下吧",
                 imageUrl: `${apiUrl.replace('Api/', 'share.png')}`,

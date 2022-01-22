@@ -61,6 +61,10 @@ export default class GameRecorderScript extends cc.Component {
 
     initTouch() {
         click(this.playNode, () => {
+            // @ts-ignore
+            wx.reportEvent("click_video_tape", {
+
+            })
             if (this.video.ing) {
                 // 录制动作
                 this.playAction();

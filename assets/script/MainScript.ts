@@ -305,6 +305,13 @@ export default class MainScript extends cc.Component {
         cc.find('Canvas/next_level').getComponent(NextLevelScript).show(parseInt(getData('level')), () => {
             // console.log(Player.getInstance().level)
             this.loadLevelNpc(parseInt(getData('level')))
+
+            if (wxGame) {
+                // @ts-ignore
+                wx.reportEvent("game_level", {
+                    "level": parseInt(getData('level'))
+                })
+            }
         })
 
 

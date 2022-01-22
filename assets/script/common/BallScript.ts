@@ -10,7 +10,7 @@ import MainScript from "../MainScript";
 import Player from "../Player";
 import {blockType, playType, scene} from "../config";
 import AimBallScript from "./AimBallScript";
-import {alert, getData, loadScene, playAudio, setData} from "../Utils";
+import {alert, getData, loadScene, playAudio, setData, wxGame} from "../Utils";
 
 const {ccclass, property} = cc._decorator;
 
@@ -41,6 +41,7 @@ export default class BallScript extends cc.Component {
 
         //白块
         if (otherNodeType == blockType.white) {
+            this.wxVibrateShort();
             // otherCollider.node.getComponent(BlockScript).createBorder();
             cc.resources.load('mp3/白块', cc.AudioClip, (err, mp3: cc.AudioClip) => {
                 playAudio(mp3)
@@ -50,16 +51,19 @@ export default class BallScript extends cc.Component {
         }
         // 黑块
         if (otherNodeType == blockType.ban) {
+            this.wxVibrateShort();
             cc.resources.load('mp3/黑块', cc.AudioClip, (err, mp3: cc.AudioClip) => {
                 playAudio(mp3)
             })
 
             otherCollider.node.parent.getComponent(BlockScript).createBanSize();
             this.hideAimBall();
+
         }
         //线
         if (otherNodeType == blockType.line) {
             // console.log("线")
+            this.wxVibrateShort();
             cc.resources.load('mp3/白块', cc.AudioClip, (err, mp3: cc.AudioClip) => {
                 playAudio(mp3)
             })
@@ -78,6 +82,19 @@ export default class BallScript extends cc.Component {
      */
     hideAimBall() {
         Player.getInstance().CanvasNode().getComponent(AimBallScript).hide();
+    }
+
+    /**
+     * 碰到白块震动
+     */
+    wxVibrateShort(){
+        if (wxGame){
+            // @ts-ignore
+            wx.vibrateShort({
+                type:"heavy"
+            })
+
+        }
     }
 
     update(dt) {
