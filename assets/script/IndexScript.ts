@@ -23,7 +23,32 @@ export default class IndexScript extends cc.Component {
     createNode: cc.Node = null;
 
 
+    private interstitialAd = null
+
+
     onLoad() {
+        // @ts-ignore
+        if(wx.createInterstitialAd){
+            // @ts-ignore
+            this.interstitialAd = wx.createInterstitialAd({ adUnitId: 'adunit-1523aacef79b7d20' })
+            this.interstitialAd.onLoad(() => {
+                console.log('onLoad event emit')
+                this.interstitialAd.show().catch((err) => {
+                    console.error(err)
+                })
+            })
+            this.interstitialAd.onError((err) => {
+                console.log('onError event emit', err)
+            })
+            this.interstitialAd.onClose((res) => {
+                console.log('onClose event emit', res)
+            })
+        }
+
+
+
+
+
         Player.getInstance().getShareInfo(); // 获取分享
         openWuli();
         cc.resources.loadDir('prefab');
@@ -44,13 +69,17 @@ export default class IndexScript extends cc.Component {
             return;
         }
 
+
         if (wxGame) {
             this.wxShareShow();
             this.wxLogin();
+
         } else {
             // 游客
             Player.getInstance().webLogin();
         }
+
+
     }
 
 

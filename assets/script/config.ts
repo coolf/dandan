@@ -11,7 +11,7 @@ let playType = {
 }
 
 // let apiUrl = 'http://0.0.0.0:8088/Api/';
-let apiUrl = 'https://game.ball.qq.cool/Api/';
+let apiUrl = 'https://dandan.teqiyi.com/Api/';
 let levelApi = (level) => `${apiUrl}Level/?level=${level}`;
 let ballSpeed = 800;
 

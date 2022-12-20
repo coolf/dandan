@@ -34,8 +34,25 @@ export default class NewClass extends cc.Component {
 
     private levelNodePool: cc.NodePool = new cc.NodePool();
 
+    private interstitialAd = null
     onLoad() {
-
+        // @ts-ignore
+        if(wx.createInterstitialAd){
+            // @ts-ignore
+            this.interstitialAd = wx.createInterstitialAd({ adUnitId: 'adunit-1523aacef79b7d20' })
+            this.interstitialAd.onLoad(() => {
+                console.log('onLoad event emit')
+                this.interstitialAd.show().catch((err) => {
+                    console.error(err)
+                })
+            })
+            this.interstitialAd.onError((err) => {
+                console.log('onError event emit', err)
+            })
+            this.interstitialAd.onClose((res) => {
+                console.log('onClose event emit', res)
+            })
+        }
         this.initTouch()
         this.page_num = Math.ceil(Player.getInstance().levelNum / this.one_page_num);
         // console.log(`总页数${this.page_num}`)
