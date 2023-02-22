@@ -46,9 +46,22 @@ export default class MainScript extends cc.Component {
     @property(cc.Node)
     blockParent: cc.Node = null;
 
+    // 激励广告
+    private videoAd = null;
+
 
     onLoad() {
-        openWuli()
+        openWuli();
+        // @ts-ignore
+        this.videoAd = wx.createRewardedVideoAd({
+            adUnitId: 'adunit-746379635e5b0469'
+        })
+        this.videoAd.onLoad(() => {
+            console.log('激励视频 广告加载成功')
+        })
+        this.videoAd.onError(err => {
+            console.log('激励视频',err)
+        })
         this.blockParent.zIndex = 99;
         this.initTouch();
         this.initScript();
@@ -304,7 +317,32 @@ export default class MainScript extends cc.Component {
 
         cc.find('Canvas/next_level').getComponent(NextLevelScript).show(parseInt(getData('level')), () => {
             // console.log(Player.getInstance().level)
-            this.loadLevelNpc(parseInt(getData('level')))
+
+            if (parseInt(getData('level')) % 5 == 0) {
+                this.videoAd.onClose(res => {
+                    // 用户点击了【关闭广告】按钮
+                    // 小于 2.1.0 的基础库版本，res 是一个 undefined
+                    if (res && res.isEnded || res === undefined) {
+                        // 正常播放结束，可以下发游戏奖励
+                        this.loadLevelNpc(parseInt(getData('level')))
+                    } else {
+                        // 播放中途退出，不下发游戏奖励
+                        loadScene(scene.Level);
+                    }
+                })
+                this.videoAd.show().catch(() => {
+                    // 失败重试
+                    this.videoAd.load()
+                        .then(() => this.videoAd.show())
+                        .catch(err => {
+                            console.log('激励视频 广告显示失败', err)
+                            this.loadLevelNpc(parseInt(getData('level')))
+                        })
+                })
+            } else {
+                this.loadLevelNpc(parseInt(getData('level')))
+            }
+
 
             if (wxGame) {
                 // @ts-ignore
