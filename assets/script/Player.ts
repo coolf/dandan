@@ -49,6 +49,9 @@ export default class Player {
     public playType: number = null;
 
 
+    public GameClub = null;
+
+
     /**
      * 实例
      */

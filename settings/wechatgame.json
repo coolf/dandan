@@ -1,7 +1,7 @@
 {
   "appid": "wx7f0d7e36030bb3d6",
   "orientation": "portrait",
-  "separate_engine": false,
+  "separate_engine": true,
   "REMOTE_SERVER_ROOT": "",
   "subContext": "",
   "startSceneAssetBundle": false

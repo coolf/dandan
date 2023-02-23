@@ -28,9 +28,22 @@ export default class IndexScript extends cc.Component {
 
     onLoad() {
         // @ts-ignore
-        if(wx.createInterstitialAd){
+        Player.getInstance().GameClub = wx.createGameClubButton({
+            icon: 'green',
+            style: {
+                left: 10,
+                top: cc.winSize.height / 2,
+                width: 40,
+                height: 40
+            }
+        });
+        //游戏圈按钮
+        Player.getInstance().GameClub.show();
+
+        // @ts-ignore
+        if (wx.createInterstitialAd) {
             // @ts-ignore
-            this.interstitialAd = wx.createInterstitialAd({ adUnitId: 'adunit-1523aacef79b7d20' })
+            this.interstitialAd = wx.createInterstitialAd({adUnitId: 'adunit-1523aacef79b7d20'})
             this.interstitialAd.onLoad(() => {
                 console.log('onLoad event emit')
                 this.interstitialAd.show().catch((err) => {
@@ -44,9 +57,6 @@ export default class IndexScript extends cc.Component {
                 console.log('onClose event emit', res)
             })
         }
-
-
-
 
 
         Player.getInstance().getShareInfo(); // 获取分享
